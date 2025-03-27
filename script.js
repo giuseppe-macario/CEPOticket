@@ -1,3 +1,35 @@
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration => {
+        if (registration.waiting) {
+          if (confirm("È disponibile una nuova versione dell'app. Vuoi aggiornare?")) {
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+          }
+        }
+
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              if (confirm("È disponibile una nuova versione dell'app. Vuoi aggiornare?")) {
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
+              }
+            }
+          });
+        });
+      });
+
+    let refreshing;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        refreshing = true;
+        window.location.reload();
+      }
+    });
+  });
+}
+
 window.addEventListener('appinstalled', () => {
   setTimeout(() => {
     const email = prompt("Scrivi il tuo indirizzo email (sarà usato come mittente):");
