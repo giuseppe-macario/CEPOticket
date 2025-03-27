@@ -1,0 +1,8 @@
+{
+  "name": "CEPOticket",
+  "short_name": "CEPOticket",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#007bff"
+}
